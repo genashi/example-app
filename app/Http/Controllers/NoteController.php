@@ -77,11 +77,11 @@ class NoteController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * Toggles is_completed or edits note details based on provided data.
+     * Saves title/content (and optional category), and toggles is_completed status if provided.
      */
     public function update(Request $request, Note $note)
     {
-        // Manually check permission as the 'authorize' method is missing
+        // Authorization
         if (auth()->id() !== $note->user_id) {
             abort(403, 'Unauthorized action.');
         }
@@ -93,20 +93,18 @@ class NoteController extends Controller
             'is_completed' => 'sometimes|boolean',
         ]);
 
-        // Only toggle is_completed if field is present
+        // Update fields if present in input
+        if ($request->filled('title')) {
+            $note->title = $request->input('title');
+        }
+        if ($request->has('content')) {
+            $note->content = $request->input('content');
+        }
+        if ($request->filled('category')) {
+            $note->category = $request->input('category');
+        }
         if ($request->has('is_completed')) {
             $note->is_completed = $request->boolean('is_completed');
-        }
-
-        // Update other note details if present
-        if (array_key_exists('title', $data)) {
-            $note->title = $data['title'];
-        }
-        if (array_key_exists('content', $data)) {
-            $note->content = $data['content'];
-        }
-        if (array_key_exists('category', $data)) {
-            $note->category = $data['category'];
         }
 
         $note->save();

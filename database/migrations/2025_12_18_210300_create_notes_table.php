@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->string('category')->default('General'); // Для категорий заметок
+            $table->boolean('is_completed')->default(false);
             $table->timestamps();
         });
     }
