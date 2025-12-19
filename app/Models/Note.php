@@ -12,6 +12,11 @@ class Note extends Model
         'content',
         'category',
         'user_id',
+        'is_completed',
+    ];
+
+    protected $casts = [
+        'is_completed' => 'boolean',
     ];
 
     /**

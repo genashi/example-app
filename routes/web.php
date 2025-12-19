@@ -9,8 +9,17 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->action([NoteController::class, 'index']);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'ru'])) {
+        if (request()->hasSession()) {
+            request()->session()->put('locale', $locale);
+        }
+    }
+    return redirect()->back();
+})->name('lang.switch');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
